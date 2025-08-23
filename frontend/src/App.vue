@@ -1,10 +1,14 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-
-  <HelloWorld />
+  <div id="app">
+    <router-view/>
+  </div>
 </template>
 
-
+<script>
+export default {
+  name: 'App'
+}
+</script>
+<style>
+/* optional global styles */
+</style>

@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+numpy
+joblib
+scikit-learn
+# NOTE: your model file shows _sklearn_version=1.7.1
+# If pip can't find that yet, try pinning to the version you trained with,
+# or use a close recent version (e.g. scikit-learn==1.4.2) and re-export later.

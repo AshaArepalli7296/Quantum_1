@@ -1,4 +1,3 @@
-
 <template>
   <div class="container" ref="container">
     <!-- login form -->
@@ -16,7 +15,7 @@
           <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>
         </div>
         <div class="forgot-link">
-          <a href="#">Forgot password?</a>
+          <a href="#" @click.prevent="openForgotPassword">Forgot password?</a>
         </div>
         <button type="submit" class="btn">Login</button>
         <p>or login with social platforms</p>
@@ -72,19 +71,30 @@
         <button class="btn login-btn" @click.prevent="showLogin">Login</button>
       </div>
     </div>
+
+    <!-- Forgot Password Popup -->
+    <div v-if="showForgot" class="modal-overlay">
+      <div class="modal-content">
+        <ForgotPassword @close="closeForgotPassword" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import ForgotPassword from './ForgotPassword.vue';
+
 export default {
   name: "Login",
+  components: { ForgotPassword },
   data() {
     return {
       portfolioURL: "https://chinni-portfolio.vercel.app/#home",
       loginData: { username: "", password: "" },
       registerData: { username: "", email: "", password: "" },
       loginErrors: {},
-      registerErrors: {}
+      registerErrors: {},
+      showForgot: false
     };
   },
   methods: {
@@ -93,6 +103,12 @@ export default {
     },
     showLogin() {
       this.$refs.container.classList.remove("active");
+    },
+    openForgotPassword() {
+      this.showForgot = true;
+    },
+    closeForgotPassword() {
+      this.showForgot = false;
     },
     validatePassword(password) {
       return password.length >= 6;
@@ -370,4 +386,6 @@ form {
     font-size: 30px;
   }
 }
+
+
 </style>

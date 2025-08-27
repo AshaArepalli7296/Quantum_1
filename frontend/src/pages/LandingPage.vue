@@ -1,12 +1,11 @@
 <template>
-  <div class="min-h-screen text-gray-900">
+  <div class="min-h-screen bg-gray-50 text-gray-900">
     <!-- Navbar -->
-    <nav class="sticky top-0 left-0 w-full z-50 shadow-md bg-white bg-opacity-90 backdrop-blur-md">
+    <nav class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow z-50 animate-fadeDown">
       <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <!-- Brand -->
         <div
-          class="text-2xl font-extrabold tracking-wide hover:scale-105 transition-transform duration-300"
-          style="color: #3c61e2;"
+          class="text-2xl font-extrabold text-[#38bdf8] tracking-wide hover:scale-105 transition-transform duration-300 drop-shadow-lg"
         >
           Quantum Supernovas
         </div>
@@ -61,7 +60,7 @@
           Smarter, Faster, and Safer Transactions with Quantum ML
         </h1>
         <p class="text-lg md:text-xl text-white/90 mb-6 drop-shadow-lg">
-          Traditional fraud detection methods struggle with today’s complex transactions. 
+          Traditional fraud detection methods struggle with today's complex transactions. 
           Our Quantum ML framework analyzes vast amounts of data in real-time, 
           detecting anomalies and patterns that others miss.
         </p>
@@ -208,11 +207,13 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import aImg from "../assets/a.jpg";
-import bImg from "../assets/b.jpg";
-import cImg from "../assets/c.jpg";
 
-const images = [aImg, bImg, cImg];
+// Import your local images from assets folder
+import imageA from '@/assets/a.jpg';
+import imageB from '@/assets/b.jpg';
+import imageC from '@/assets/c.jpg';
+
+const images = [imageA, imageB, imageC];
 const currentImage = ref(0);
 let slideInterval;
 
@@ -227,7 +228,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .nav-link {
   color: #38bdf8;
   font-weight: 600;
@@ -269,4 +270,3 @@ onUnmounted(() => {
 .animate-fadeIn { animation: fadeIn 1.5s ease-in-out; }
 .animate-slideUp { animation: slideUp 1.5s ease-in-out; }
 </style>
-

@@ -1,175 +1,176 @@
 <template>
-  <div class="container" ref="container">
-    <!-- login form -->
-    <div class="form-box login">
-      <form id="loginForm" @submit.prevent="handleLogin">
-        <h1>Login</h1>
-        <div class="input-box" :class="{ error: loginErrors.username }">
-          <input type="text" v-model.trim="loginData.username" placeholder="Username" required>
-          <i class='bx bxs-user'></i>
-          <div class="error-message" v-if="loginErrors.username">{{ loginErrors.username }}</div>
-        </div>
-        <div class="input-box" :class="{ error: loginErrors.password }">
-          <input type="password" v-model="loginData.password" placeholder="Password" required>
-          <i class='bx bxs-lock-alt'></i>
-          <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>
-        </div>
-        <div class="forgot-link">
-          <a href="#" @click.prevent="openForgotPassword">Forgot password?</a>
-        </div>
-        <button type="submit" class="btn">Login</button>
-        <p>or login with social platforms</p>
-        <div class="social-icons">
-          <a href="#"><i class='bx bxl-google'></i></a>
-          <a href="#"><i class='bx bxl-facebook'></i></a>
-          <a href="#"><i class='bx bxl-github'></i></a>
-          <a href="#"><i class='bx bxl-linkedin'></i></a>
-        </div>
-      </form>
-    </div>
-
-    <!-- Registration -->
-    <div class="form-box register">
-      <form id="registerForm" @submit.prevent="handleRegister">
-        <h1>Registration</h1>
-        <div class="input-box" :class="{ error: registerErrors.username }">
-          <input type="text" v-model.trim="registerData.username" placeholder="Username" required>
-          <i class='bx bxs-user'></i>
-          <div class="error-message" v-if="registerErrors.username">{{ registerErrors.username }}</div>
-        </div>
-        <div class="input-box" :class="{ error: registerErrors.email }">
-          <input type="email" v-model.trim="registerData.email" placeholder="Email" required>
-          <i class='bx bxs-envelope'></i>
-          <div class="error-message" v-if="registerErrors.email">{{ registerErrors.email }}</div>
-        </div>
-        <div class="input-box" :class="{ error: registerErrors.password }">
-          <input type="password" v-model="registerData.password" placeholder="Password" required>
-          <i class='bx bxs-lock-alt'></i>
-          <div class="error-message" v-if="registerErrors.password">{{ registerErrors.password }}</div>
-        </div>
-        <button type="submit" class="btn">Register</button>
-        <p>or Register with social platforms</p>
-        <div class="social-icons">
-          <a href="#"><i class='bx bxl-google'></i></a>
-          <a href="#"><i class='bx bxl-facebook'></i></a>
-          <a href="#"><i class='bx bxl-github'></i></a>
-          <a href="#"><i class='bx bxl-linkedin'></i></a>
-        </div>
-      </form>
-    </div>
-
-    <!-- Toggle -->
-    <div class="toggle-box">
-      <div class="toggle-panel toggle-left">
-        <h1>Hello, Welcome!</h1>
-        <p>Don't have an account?</p>
-        <button class="btn register-btn" @click.prevent="showRegister">Register</button>
+  <div class="page-full">
+    <div :class="['container', { active: isActive }]">
+      <!-- Login Box -->
+      <div class="form-box login">
+        <form @submit.prevent="handleLogin">
+          <h1>Login</h1>
+          <div class="input-box" :class="{ error: errors.email }">
+            <input
+              type="email"
+              placeholder="Email"
+              v-model="loginData.email"
+            />
+            <i class="bx bx-envelope"></i>
+            <div class="error-message">{{ errors.email }}</div>
+          </div>
+          <div class="input-box" :class="{ error: errors.password }">
+            <input
+              type="password"
+              placeholder="Password"
+              v-model="loginData.password"
+            />
+            <i class="bx bx-lock-alt"></i>
+            <div class="error-message">{{ errors.password }}</div>
+          </div>
+          <div class="forgot-link">
+            <a href="#">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn">Login</button>
+          <p>or login with social platforms</p>
+          <div class="social-icons">
+            <a href="#"><i class="bx bxl-google"></i></a>
+            <a href="#"><i class="bx bxl-facebook"></i></a>
+            <a href="#"><i class="bx bxl-twitter"></i></a>
+          </div>
+        </form>
       </div>
-      <div class="toggle-panel toggle-right">
-        <h1>Welcome Back!</h1>
-        <p>Already have an account?</p>
-        <button class="btn login-btn" @click.prevent="showLogin">Login</button>
-      </div>
-    </div>
 
-    <!-- Forgot Password Popup -->
-    <div v-if="showForgot" class="modal-overlay">
-      <div class="modal-content">
-        <ForgotPassword @close="closeForgotPassword" />
+      <!-- Register Box -->
+      <div class="form-box register">
+        <form @submit.prevent="handleRegister">
+          <h1>Register</h1>
+          <div class="input-box" :class="{ error: errors.name }">
+            <input type="text" placeholder="Name" v-model="registerData.name" />
+            <i class="bx bx-user"></i>
+            <div class="error-message">{{ errors.name }}</div>
+          </div>
+          <div class="input-box" :class="{ error: errors.email }">
+            <input
+              type="email"
+              placeholder="Email"
+              v-model="registerData.email"
+            />
+            <i class="bx bx-envelope"></i>
+            <div class="error-message">{{ errors.email }}</div>
+          </div>
+          <div class="input-box" :class="{ error: errors.password }">
+            <input
+              type="password"
+              placeholder="Password"
+              v-model="registerData.password"
+            />
+            <i class="bx bx-lock-alt"></i>
+            <div class="error-message">{{ errors.password }}</div>
+          </div>
+          <button type="submit" class="btn">Register</button>
+          <p>or register with social platforms</p>
+          <div class="social-icons">
+            <a href="#"><i class="bx bxl-google"></i></a>
+            <a href="#"><i class="bx bxl-facebook"></i></a>
+            <a href="#"><i class="bx bxl-twitter"></i></a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Toggle Panels -->
+      <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+          <h1>Hello, Welcome!</h1>
+          <p>Don’t have an account?</p>
+          <button class="btn" @click="toggle">Register</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>Welcome Back!</h1>
+          <p>Already have an account?</p>
+          <button class="btn" @click="toggle">Login</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ForgotPassword from './ForgotPassword.vue';
-
 export default {
-  name: "Login",
-  components: { ForgotPassword },
+  name: "AuthPage",
   data() {
     return {
-      portfolioURL: "https://chinni-portfolio.vercel.app/#home",
-      loginData: { username: "", password: "" },
-      registerData: { username: "", email: "", password: "" },
-      loginErrors: {},
-      registerErrors: {},
-      showForgot: false
+      isActive: false,
+      loginData: {
+        email: "",
+        password: "",
+      },
+      registerData: {
+        name: "",
+        email: "",
+        password: "",
+      },
+      errors: {},
     };
   },
   methods: {
-    showRegister() {
-      this.$refs.container.classList.add("active");
-    },
-    showLogin() {
-      this.$refs.container.classList.remove("active");
-    },
-    openForgotPassword() {
-      this.showForgot = true;
-    },
-    closeForgotPassword() {
-      this.showForgot = false;
-    },
-    validatePassword(password) {
-      return password.length >= 6;
+    toggle() {
+      this.isActive = !this.isActive;
+      this.errors = {};
     },
     handleLogin() {
-      this.loginErrors = {};
-      if (!this.loginData.username) {
-        this.loginErrors.username = "Username is required";
+      this.errors = {};
+      if (!this.loginData.email) {
+        this.errors.email = "Email is required";
       }
-      if (!this.validatePassword(this.loginData.password)) {
-        this.loginErrors.password = "Password must be at least 6 characters long";
+      if (!this.loginData.password) {
+        this.errors.password = "Password is required";
       }
-      if (Object.keys(this.loginErrors).length === 0) {
-        window.location.href = this.portfolioURL;
+      if (Object.keys(this.errors).length === 0) {
+        alert("Login successful!");
+        this.$router.push({ name: 'Home' });
       }
     },
     handleRegister() {
-      this.registerErrors = {};
-      if (!this.registerData.username) {
-        this.registerErrors.username = "Username is required";
+      this.errors = {};
+      if (!this.registerData.name) {
+        this.errors.name = "Name is required";
       }
-      if (!this.registerData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.registerData.email)) {
-        this.registerErrors.email = "Please enter a valid email";
+      if (!this.registerData.email) {
+        this.errors.email = "Email is required";
       }
-      if (!this.validatePassword(this.registerData.password)) {
-        this.registerErrors.password = "Password must be at least 6 characters long";
+      if (!this.registerData.password) {
+        this.errors.password = "Password is required";
       }
-      if (Object.keys(this.registerErrors).length === 0) {
-        window.location.href = this.portfolioURL;
+      if (Object.keys(this.errors).length === 0) {
+        alert("Registration successful!");
+        this.$router.push({ name: 'Home' });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+@import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
 
-/* --- paste all your CSS here --- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.page-full {
   min-height: 100vh;
-  background: linear-gradient(90deg, #e2e2e2, #c9d6ff);
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f2f5;
 }
 .container {
   position: relative;
   width: 850px;
-  height: 550px;
+  height: 500px;
   background: #fff;
-  border-radius: 30px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-  margin: 20px;
+  border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 .form-box {
   position: absolute;
@@ -239,14 +240,17 @@ form {
 .btn {
   width: 100%;
   height: 48px;
-  background-color: #7494ec;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #3c61e2; /* 🔵 main theme color */
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-size: 16px;
   color: #fff;
   font-weight: 600;
+  transition: 0.3s;
+}
+.btn:hover {
+  background-color: #2c4cc9;
 }
 .container p {
   font-size: 14.5px;
@@ -277,7 +281,7 @@ form {
   left: -250%;
   width: 300%;
   height: 100%;
-  background: #7494ec;
+  background: #3c61e2; /* 🔵 theme color */
   border-radius: 150px;
   z-index: 2;
   transition: 1.8s ease-in-out;
@@ -320,7 +324,6 @@ form {
   height: 46px;
   background: transparent;
   border: 2px solid #fff;
-  box-shadow: none;
 }
 .error-message {
   color: #ff3333;
@@ -336,56 +339,4 @@ form {
 .input-box.error .error-message {
   display: block;
 }
-@media screen and (max-width: 650px) {
-  .container {
-    height: calc(100vh - 40px);
-  }
-  .form-box {
-    bottom: 0;
-    width: 100%;
-    height: 70%;
-  }
-  .container.active .form-box {
-    right: 0;
-    bottom: 30%;
-  }
-  .toggle-box::before {
-    left: 0;
-    top: -270%;
-    width: 100%;
-    height: 300%;
-  }
-  .container.active .toggle-box::before {
-    left: 0;
-    top: 70%;
-  }
-  .toggle-panel {
-    width: 100%;
-    height: 30%;
-  }
-  .toggle-panel.toggle-left {
-    top: 0;
-  }
-  .container.active .toggle-panel.toggle-left {
-    left: 0;
-    top: -30%;
-  }
-  .toggle-panel.toggle-right {
-    right: 0;
-    bottom: -30%;
-  }
-  .container.active .toggle-panel.toggle-right {
-    bottom: 0;
-  }
-}
-@media screen and (max-width: 450px) {
-  .form-box {
-    padding: 20px;
-  }
-  .toggle-panel h1 {
-    font-size: 30px;
-  }
-}
-
-
 </style>

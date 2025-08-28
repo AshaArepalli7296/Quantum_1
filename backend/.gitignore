@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# Environment files
+*.env
+
+# Artifacts (if they are large, like models)
+app/artifacts/

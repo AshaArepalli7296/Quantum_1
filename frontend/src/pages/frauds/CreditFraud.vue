@@ -1,162 +1,193 @@
 <template>
-  <div class="credit-fraud-page">
-    <section id="credit-fraud" class="model-section">
-      <h2 class="model-title">💳 Credit Card Fraud Detection</h2>
-      <p class="model-description">
-        Enter transaction details to predict if it’s <strong>fraudulent</strong>.
-      </p>
+  <div class="fraud-container">
+    <h1>💳 Credit Card Fraud Detection</h1>
 
-      <!-- Form -->
-      <form @submit.prevent="predictFraud" class="fraud-form">
+    <!-- Form Card -->
+    <div class="card">
+      <form @submit.prevent="predictFraud" class="form-box">
         <div class="form-group">
-          <label>Step:</label>
-          <input v-model.number="form.step" type="number" required />
-        </div>
-
-        <div class="form-group">
-          <label>Type:</label>
-          <select v-model="form.type" required>
-            <option disabled value="">-- Select Type --</option>
-            <option v-for="t in transactionTypes" :key="t" :value="t">
-              {{ t }}
-            </option>
-          </select>
+          <label>Transaction Step:</label>
+          <input v-model.number="transaction.step" type="number" required />
         </div>
 
         <div class="form-group">
           <label>Amount:</label>
-          <input v-model.number="form.amount" type="number" step="0.01" required />
+          <input v-model.number="transaction.amount" type="number" required />
         </div>
 
         <div class="form-group">
           <label>Old Balance Origin:</label>
-          <input v-model.number="form.oldbalanceOrg" type="number" step="0.01" required />
+          <input v-model.number="transaction.oldbalanceOrg" type="number" required />
         </div>
 
         <div class="form-group">
           <label>New Balance Origin:</label>
-          <input v-model.number="form.newbalanceOrig" type="number" step="0.01" required />
+          <input v-model.number="transaction.newbalanceOrig" type="number" required />
         </div>
 
         <div class="form-group">
           <label>Old Balance Destination:</label>
-          <input v-model.number="form.oldbalanceDest" type="number" step="0.01" required />
+          <input v-model.number="transaction.oldbalanceDest" type="number" required />
         </div>
 
         <div class="form-group">
           <label>New Balance Destination:</label>
-          <input v-model.number="form.newbalanceDest" type="number" step="0.01" required />
+          <input v-model.number="transaction.newbalanceDest" type="number" required />
         </div>
 
-        <button class="try-btn" type="submit" :disabled="loading">
-          {{ loading ? "⏳ Predicting..." : "🚀 Predict" }}
-        </button>
+        <div class="form-group">
+          <label>Transaction Type:</label>
+          <select v-model="transaction.type">
+            <option value="TRANSFER">TRANSFER</option>
+            <option value="CASH_OUT">CASH_OUT</option>
+            <option value="PAYMENT">PAYMENT</option>
+            <option value="DEBIT">DEBIT</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn">🔍 Predict</button>
       </form>
+    </div>
 
-      <!-- Prediction Result -->
-      <div v-if="prediction" class="result-box">
-        <h3>🔮 Prediction Result</h3>
-        <p>Status: 
-          <strong :style="{ color: prediction.prediction === 1 ? 'red' : 'lightgreen' }">
-            {{ prediction.prediction === 1 ? "Fraudulent" : "Legit" }}
-          </strong>
-        </p>
-        <p>Probability: <strong>{{ (prediction.fraud_probability * 100).toFixed(2) }}%</strong></p>
-      </div>
-
-      <!-- Error -->
-      <div v-if="error" class="error-box">
-        ⚠ {{ error }}
-      </div>
-    </section>
+    <!-- Result Card -->
+    <div
+      v-if="result"
+      class="card result-box"
+      :class="result.prediction === 1 ? 'fraud' : 'legit'"
+    >
+      <h2>
+        {{ result.prediction === 1 ? "🚨 Fraud Detected!" : "✅ Legit Transaction" }}
+      </h2>
+      <p>Probability: {{ (result.probability * 100).toFixed(2) }}%</p>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref } from "vue"
+import axios from "axios"
 
-const API_BASE = "http://127.0.0.1:8000";
-
-const form = ref({
+const transaction = ref({
   step: 0,
-  type: "",
   amount: 0,
   oldbalanceOrg: 0,
   newbalanceOrig: 0,
   oldbalanceDest: 0,
   newbalanceDest: 0,
-});
+  type: "TRANSFER"
+})
 
-const transactionTypes = ref([]);
-const prediction = ref(null);
-const error = ref(null);
-const loading = ref(false);
-
-// Fetch allowed transaction types from FastAPI
-onMounted(async () => {
-  try {
-    const res = await axios.get(`${API_BASE}/features`);
-    transactionTypes.value = res.data.allowed_transaction_types || [];
-  } catch (err) {
-    console.error("Failed to fetch transaction types", err);
-  }
-});
+const result = ref(null)
 
 const predictFraud = async () => {
-  error.value = null;
-  prediction.value = null;
-  loading.value = true;
-
   try {
-    const res = await axios.post(`${API_BASE}/predict`, form.value);
-    prediction.value = res.data;
-  } catch (err) {
-    error.value = err.response?.data?.detail || "Something went wrong!";
-  } finally {
-    loading.value = false;
+    const response = await axios.post(
+      "http://127.0.0.1:8000/predict/creditcard/",
+      transaction.value
+    )
+    result.value = response.data
+  } catch (error) {
+    console.error(error)
+    result.value = { prediction: -1, probability: 0 }
   }
-};
+}
 </script>
 
 <style scoped>
-/* ✅ reuse your existing styles, adding form + error formatting */
-.fraud-form {
-  display: grid;
-  gap: 1rem;
-  margin-top: 2rem;
+/* Container */
+.fraud-container {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: #2c3e50;
 }
-.form-group {
+
+/* Heading */
+.fraud-container h1 {
+  margin-bottom: 25px;
+  font-size: 26px;
+  color: #34495e;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  padding: 25px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Form Layout */
+.form-box {
   display: flex;
   flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
   text-align: left;
 }
-.form-group label {
-  font-weight: bold;
-  margin-bottom: 0.3rem;
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: inline-block;
+  color: #34495e;
 }
-.form-group input,
-.form-group select {
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: none;
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dcdde1;
+  border-radius: 8px;
+  transition: border 0.3s ease;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  border-color: #3498db;
   outline: none;
-  font-size: 1rem;
 }
+
+/* Button */
+.btn {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: #fff;
+  font-weight: 600;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #2980b9, #1f6391);
+  transform: scale(1.05);
+}
+
+/* Result Box */
 .result-box {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  text-align: center;
-}
-.error-box {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: 10px;
-  background: rgba(255, 0, 0, 0.15);
-  color: #ff4d4d;
+  padding: 20px;
   font-weight: bold;
-  text-align: center;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.result-box.fraud {
+  background: #ffeaea;
+  border: 2px solid #e74c3c;
+  color: #c0392b;
+}
+
+.result-box.legit {
+  background: #eaffea;
+  border: 2px solid #2ecc71;
+  color: #27ae60;
 }
 </style>
+ 
